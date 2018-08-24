@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Создать пост</title>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+<!--    <script type="text/javascript">
+      $(document).ready(() => {
+        $('#send_post').click(() => {
+          var data = $('#create_post_form')[0].elements;
+          var formdata = new FormData();
+          console.log(data.id_preview_image.files[0])
+          formdata.append("title", data.id_title.value)
+          formdata.append("csrfmiddlewaretoken", data.csrfmiddlewaretoken.value)
+          formdata.append("preview_image", data.id_preview_image.files[0])
+          console.log(formdata)
+          $.ajax({
+            url: '/posts/create/',
+            type: 'POST',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formdata,
+            success: ()=>{
+              console.log("Success")
+            },
+            error: ()=>{
+              console.log("error")
+            }
+          })
+        }
+      )
+      })
+    </script> -->
+
+    <script type="text/javascript">
+      $(document).ready(() => {
+        $('#add_image').click(() => {
+          var data = $('#add_file_to_post')[0].elements;
+          var post_id = $('#create_post_form')[0].elements.post_id.value
+          console.log(post_id)
+          var formdata = new FormData();
+          formdata.append("csrfmiddlewaretoken", data.csrfmiddlewaretoken.value)
+          formdata.append("image", data.add_post_img.files[0])
+          formdata.append("post_id", post_id)
+          console.log(formdata)
+          $.ajax({
+            url: '/posts/add-post-img/',
+            type: 'POST',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formdata,
+            success: (data)=>{
+              const response = JSON.parse(data)
+              console.log("Success")
+              console.log(response['key'])
+              console.log(response['img_path'])
+              String.prototype.format = function() {
+                a = this;
+                for (k in arguments) {
+                  a = a.replace("{" + k + "}", arguments[k])
+                }
+                return a
+              }
+
+              var img_pk = response['img_pk']
+              console.log(img_pk)
+              $('#theDiv').prepend('<img id="theImg" src="{0}" style="width:200px" />'.format(response['img_path']))
+              $form = $('<form action="/posts/delete-post-img/" method="post" id="delete_image">{% csrf_token %}</form>')
+              // $form.append('<input type="hidden" name="img_pk" value="{0}">'.format(img_pk))
+              $form.append('<input type="submit" value="button">');
+              $('#theDiv').prepend($form)
+            },
+            error: ()=>{
+              console.log("error")
+            }
+          })
+        }
+
+        $('#delete_image').click(() =>{
+          const data = $('#delete_image')[0].elements
+          const img_pk = data.img_pk.value
+          $.ajax({
+            url: 'posts/delete-post-image',
+            type: 'POST'
+            data = {
+              csrfmiddlewaretoken: data.csrfmiddlewaretoken.value,
+              img_pk: img_pk,
+            },
+            success (data) => {
+              console.log('success')
+            },
+            error (data) => {
+              console.log('error')
+            }
+          })
+        })
+      )
+      })
+    </script>
+
+  </head>
+  <body>
+    <form class="" action="" method="post" id="create_post_form">
+      {% csrf_token %}
+      {{form.as_p}}
+      <input type="submit" name="" value="Создать пост.">
+    </form>
+
+    <div class="">
+      <p>---------------------------------------------------------</p>
+    </div>
+
+    <form class="" action="index.html" method="post" id="add_file_to_post">
+      {% csrf_token %}
+      <input name="image" type="file" id="add_post_img">
+    </form>
+    <button type="" name="" id="add_image">Загрузить пикчу</button>
+
+    <div id="theDiv">Where is the image?</div>
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
