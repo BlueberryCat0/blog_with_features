@@ -1,0 +1,30 @@
+version: '3.3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+  celery:
+    image: celery
+    build: .
+    command: celery worker -A core --beat --loglevel=debug --concurrency=4
+    depends_on:
+      - db
+      - redis
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - redis
+      # - celery
+volumes:
+  redis:
