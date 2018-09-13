@@ -6,6 +6,11 @@ class Post(models.Model):
         max_length=100,
         verbose_name="Заголовок"
         )
+    text = models.TextField(
+        blank=True,
+        max_length=512,
+        verbose_name='Текст'
+    )
     preview_image = models.ImageField(
         upload_to="posts/preview_images/%Y/%m/%d",
         verbose_name="Превью изображение"
