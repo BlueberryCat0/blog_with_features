@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 class Post(models.Model):
     title = models.CharField(
@@ -19,6 +20,11 @@ class Post(models.Model):
         default=False,
         verbose_name='Создан'
     )
+    created_at = models.DateTimeField(
+        default=datetime.now,
+        blank=True,
+        verbose_name='Дата создания'
+        )
 
     def __str__(self):
         return self.title

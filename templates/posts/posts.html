@@ -6,9 +6,9 @@
   </head>
   <body>
     <div class="search" style="padding-bottom: 50px">
-      <form class="" action="kek.html" method="post">
+      <form class="" action="{% url 'search' %}" method="get">
         {{search_form.as_p}}
-        <button type="submit" name="button"></button>
+        <button type="submit" name="button">Искать</button>
       </form>
     </div>
 

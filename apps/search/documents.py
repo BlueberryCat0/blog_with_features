@@ -1,6 +1,5 @@
 from django_elasticsearch_dsl import DocType, Index, Text, fields
 from apps.posts.models import Post
-from .models import Car
 
 posts = Index('posts')
 
@@ -16,4 +15,7 @@ class PostDocument(DocType):
         fields = [
             'id',
             'title',
+            'text',
+            'is_created',
+            'created_at',
         ]
